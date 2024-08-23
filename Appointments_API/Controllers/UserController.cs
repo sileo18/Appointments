@@ -2,6 +2,7 @@ using Appointments_API.Data;
 using Appointments_API.Models;
 using Appointments_API.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Appointments_API.Controllers
 {
@@ -17,7 +18,7 @@ namespace Appointments_API.Controllers
         }
 
         [HttpGet("{id}", Name = "GetUser")]
-        public ActionResult<UserDto> GetUser(int id)
+        public ActionResult<UserDTO> GetUser(int id)
         {
             if (id == 0)
             {
@@ -38,7 +39,7 @@ namespace Appointments_API.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
-        public ActionResult<UserDto> CreateUser([FromBody] UserDto userDto) 
+        public ActionResult<UserCreateDTO> CreateUser([FromBody] UserCreateDTO userCreateDto) 
         {
 
 
@@ -47,23 +48,23 @@ namespace Appointments_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (userDto == null)
+            if (userCreateDto == null)
             {
-                return BadRequest(userDto);
+                return BadRequest(userCreateDto);
             }
 
             User model = new()
             {
-                email = userDto.email,
-                phone = userDto.phone,
-                name = userDto.name,
-                password = userDto.password
+                email = userCreateDto.email,
+                phone = userCreateDto.phone,
+                name = userCreateDto.name,
+                password = userCreateDto.password
             };
 
-            _db.users.Add(model);
+            EntityEntry<User> userSaved = _db.users.Add(model);
             _db.SaveChanges();
 
-            return CreatedAtRoute("GetUser", new { id = userDto.id }, userDto);
+            return CreatedAtRoute("GetUser", new { id = model.id }, model);
         }
     }    
 }

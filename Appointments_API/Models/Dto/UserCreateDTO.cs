@@ -2,9 +2,9 @@
 
 namespace Appointments_API.Models.Dto
 {
-    public class UserDTO
+    public class UserCreateDTO
     {
-        public int id { get; set; }
+        
         [Required]
         [MaxLength(30)]
         public string name { get; set; }
