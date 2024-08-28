@@ -1,9 +1,8 @@
 using Appointments_API.Data;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
 using Appointments_API;
-using Appointments_API.Models;
-using Appointments_API.Models.Dto;
+using Appointments_API.Repository.IRepository;
+using Appointments_API.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +11,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
 });
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 
 builder.Services.AddAutoMapper(typeof(MappingConfig));

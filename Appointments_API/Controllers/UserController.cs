@@ -1,6 +1,7 @@
 using Appointments_API.Data;
 using Appointments_API.Models;
 using Appointments_API.Models.Dto;
+using Appointments_API.Repository.IRepository;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +15,11 @@ namespace Appointments_API.Controllers
     {
         private readonly IMapper _mapper;
 
-        private readonly ApplicationDbContext _db;
+        private readonly IUserRepository _dbUser;
 
-        public UserController(ApplicationDbContext db, IMapper mapper)
+        public UserController(IUserRepository dbUser, IMapper mapper)
         {
-            _db = db;
+            _dbUser = dbUser;
             _mapper = mapper;
         }
 
@@ -33,7 +34,7 @@ namespace Appointments_API.Controllers
                 return BadRequest();
 
             }
-            var user = await _db.users.FirstOrDefaultAsync(u => u.id == id);
+            var user = await _dbUser.GetAsync(u => u.id == id);
 
             if (user == null)
             {
@@ -63,8 +64,7 @@ namespace Appointments_API.Controllers
 
             User model = _mapper.Map<User>(userCreateDto);
 
-            EntityEntry<User> userSaved = await _db.users.AddAsync(model);
-            await _db.SaveChangesAsync();
+            await _dbUser.CreateAsync(model);            
 
             return CreatedAtRoute("GetUser", new { id = model.id }, model);
         }
@@ -81,15 +81,14 @@ namespace Appointments_API.Controllers
                 return BadRequest();
 
             }
-            var user = await _db.users.FirstOrDefaultAsync(u => u.id == id);
+            var user = await _dbUser.GetAsync(u => u.id == id);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            _db.users.Remove(user);
-            await _db.SaveChangesAsync();
+            await _dbUser.RemoveAsync(user);
             return NoContent();
         }
 
@@ -105,8 +104,7 @@ namespace Appointments_API.Controllers
 
             User model = _mapper.Map<User>(userUpdateDto);
 
-            _db.users.Update(model);
-            await _db.SaveChangesAsync();
+            await _dbUser.UpdateAsync(model);
             return NoContent();
         }
     }    
