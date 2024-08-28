@@ -10,9 +10,9 @@ namespace Appointments_API.Repository
     {
         private readonly ApplicationDbContext _dbcontext;
 
-        internal DbSet<T> dbSet;    
+        internal DbSet<T> dbSet;
 
-        public Repository(ApplicationDbContext dbcontext)   
+        public Repository(ApplicationDbContext dbcontext)
         {
             _dbcontext = dbcontext;
             this.dbSet = _dbcontext.Set<T>();
@@ -42,7 +42,7 @@ namespace Appointments_API.Repository
 
             dbSet.Remove(entity);
             await Save();
-        }        
+        }
 
         public async Task Save()
         {

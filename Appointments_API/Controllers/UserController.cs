@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Net;
 
 namespace Appointments_API.Controllers
 {
@@ -13,12 +14,15 @@ namespace Appointments_API.Controllers
     [Route("api/AppointmentsAPI")]
     public class UserController : ControllerBase
     {
+        protected ApiResponse _response;
+
         private readonly IMapper _mapper;
 
         private readonly IUserRepository _dbUser;
 
         public UserController(IUserRepository dbUser, IMapper mapper)
         {
+            this._response = new();
             _dbUser = dbUser;
             _mapper = mapper;
         }
@@ -26,86 +30,132 @@ namespace Appointments_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}", Name = "GetUser")]
-        public async Task<ActionResult<UserDTO>> GetUser(int id)
+        public async Task<ActionResult<ApiResponse>> GetUser(int id)
         {
-            if (id == 0)
+            try
             {
+                if (id == 0)
+                {
 
-                return BadRequest();
+                    return BadRequest();
 
+                }
+                var user = await _dbUser.GetAsync(u => u.id == id);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                _response.Result = user;
+                _response.StatusCode = HttpStatusCode.OK;
+                return Ok(_response);
             }
-            var user = await _dbUser.GetAsync(u => u.id == id);
-
-            if (user == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
             }
-
-            return Ok(user);
+            return Ok();
         }
 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost]
-        public async Task<ActionResult<UserCreateDTO>> CreateUser([FromBody] UserCreateDTO userCreateDto) 
+        public async Task<ActionResult<ApiResponse>> CreateUser([FromBody] UserCreateDTO userCreateDto)
         {
 
-
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
-            }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
-            if (userCreateDto == null)
+                if (userCreateDto == null)
+                {
+                    return BadRequest(userCreateDto);
+                }
+
+                User user = _mapper.Map<User>(userCreateDto);
+                await _dbUser.CreateAsync(user);
+
+                _response.Result = user;
+                _response.StatusCode = HttpStatusCode.Created;
+
+                return CreatedAtRoute("GetUser", new { id = user.id }, _response);
+            }
+            catch (Exception ex)
             {
-                return BadRequest(userCreateDto);
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
             }
-
-            User model = _mapper.Map<User>(userCreateDto);
-
-            await _dbUser.CreateAsync(model);            
-
-            return CreatedAtRoute("GetUser", new { id = model.id }, model);
+            return Ok();
         }
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<ActionResult<ApiResponse>> DeleteUser(int id)
         {
-            if (id == 0)
+            try
             {
+                if (id == 0)
+                {
 
-                return BadRequest();
+                    return BadRequest();
 
+                }
+                var user = await _dbUser.GetAsync(u => u.id == id);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                await _dbUser.RemoveAsync(user);
+
+                _response.IsSuccess = true;
+                _response.StatusCode = HttpStatusCode.NoContent;
+
+                return Ok(_response);
             }
-            var user = await _dbUser.GetAsync(u => u.id == id);
-
-            if (user == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
             }
-
-            await _dbUser.RemoveAsync(user);
-            return NoContent();
+            return Ok();
         }
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPut]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserUpdateDTO userUpdateDto)
+        public async Task<ActionResult<ApiResponse>> UpdateUser(int id, [FromBody] UserUpdateDTO userUpdateDto)
         {
-            if (userUpdateDto == null || id != userUpdateDto.id)
+            try
             {
-                return BadRequest();
+                if (userUpdateDto == null || id != userUpdateDto.id)
+                {
+                    return BadRequest();
+                }
+
+                User model = _mapper.Map<User>(userUpdateDto);
+
+                await _dbUser.UpdateAsync(model);
+
+                _response.IsSuccess = true;
+                _response.StatusCode = HttpStatusCode.NoContent;
+
+                return Ok(_response);
             }
-
-            User model = _mapper.Map<User>(userUpdateDto);
-
-            await _dbUser.UpdateAsync(model);
-            return NoContent();
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
+            }
+            return Ok();
         }
-    }    
+    }
 }
