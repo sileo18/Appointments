@@ -14,6 +14,12 @@ namespace Appointments_API
 
             CreateMap<UserUpdateDTO, User>();
             CreateMap<User, UserUpdateDTO>();
+
+            CreateMap<ProfessionalCreateDTO, Professional>();
+            CreateMap<Professional, ProfessionalCreateDTO>();
+
+            CreateMap<ProfessionalUpdateDTO, Professional>();
+            CreateMap<Professional, ProfessionalUpdateDTO>();
         }
     }
 }

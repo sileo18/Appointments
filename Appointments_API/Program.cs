@@ -13,6 +13,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IProfessionalRepository, ProfessionalRepository>();
 
 
 builder.Services.AddAutoMapper(typeof(MappingConfig));
