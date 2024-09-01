@@ -11,7 +11,8 @@ using System.Net;
 namespace Appointments_API.Controllers
 {
     [ApiController]
-    [Route("api/AppointmentsAPI")]
+    //[Route("api/AppointmentsAPI")]
+    [Route("api/UserAPI")]
     public class UserController : ControllerBase
     {
         protected ApiResponse _response;

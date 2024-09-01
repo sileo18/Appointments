@@ -11,7 +11,7 @@ using System.Net;
 namespace Appointments_API.Controllers
 {
     [ApiController]
-    [Route("api/AppointmentsAPI")]
+    [Route("api/ProfessionalAPI")]
     public class ProfessionalController : ControllerBase
     {
         protected ApiResponse _response;
@@ -29,7 +29,7 @@ namespace Appointments_API.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("{id}", Name = "GetProfessional")]
+        [HttpGet("{id:int}", Name = "GetProfessional")]
         public async Task<ActionResult<ApiResponse>> GetProfessional(int id)
         {
             try
@@ -48,6 +48,7 @@ namespace Appointments_API.Controllers
                 }
                 _response.Result = professional;
                 _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
                 return Ok(_response);
             }
             catch (Exception ex)
@@ -83,7 +84,7 @@ namespace Appointments_API.Controllers
                 _response.Result = professional;
                 _response.StatusCode = HttpStatusCode.Created;
 
-                return CreatedAtRoute("GetUser", new { id = professional.id }, _response);
+                return CreatedAtRoute("GetProfessional", new { id = professional.id }, _response);
             }
             catch (Exception ex)
             {
@@ -97,7 +98,7 @@ namespace Appointments_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete]
-        public async Task<ActionResult<ApiResponse>> DeleteUser(int id)
+        public async Task<ActionResult<ApiResponse>> DeleteProfessional(int id)
         {
             try
             {
@@ -131,8 +132,8 @@ namespace Appointments_API.Controllers
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPut]
-        public async Task<ActionResult<ApiResponse>> UpdateUser(int id, [FromBody] ProfessionalUpdateDTO  professionalUpdateDTO)
+        [HttpPut("{id:int}", Name = "UpdateProfessional")]
+        public async Task<ActionResult<ApiResponse>> UpdateProfessional(int id, [FromBody] ProfessionalUpdateDTO  professionalUpdateDTO)
         {
             try
             {

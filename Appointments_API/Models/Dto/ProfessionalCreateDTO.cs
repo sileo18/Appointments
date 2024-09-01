@@ -9,6 +9,6 @@ namespace Appointments_API.Models.Dto
         public string name { get; set; }
 
         [Required]
-        public string servicesProvided { get; set; }
+        public string description { get; set; }
     }
 }
