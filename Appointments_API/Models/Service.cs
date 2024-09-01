@@ -10,6 +10,10 @@ namespace Appointments_API.Models
         public int id { get; set; }
         public string name { get; set; }
         public string description { get; set; }
-        public string cost { get; set; }
+        public double cost { get; set; }
+
+        [ForeignKey("Professional")]
+        public int ProfessionalId { get; set; }
+        public Professional Professional { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using Appointments_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppointmentsAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240901152802_AddForeignKeyProfessionalTableCorrectly")]
+    partial class AddForeignKeyProfessionalTableCorrectly
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,6 +58,9 @@ namespace AppointmentsAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
+                    b.Property<int>("ServiceId")
+                        .HasColumnType("int");
+
                     b.Property<string>("description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -64,6 +70,8 @@ namespace AppointmentsAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
+
+                    b.HasIndex("ServiceId");
 
                     b.ToTable("professionals");
                 });
@@ -76,11 +84,9 @@ namespace AppointmentsAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int>("ProfessionalId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("cost")
-                        .HasColumnType("float");
+                    b.Property<string>("cost")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("description")
                         .IsRequired()
@@ -91,8 +97,6 @@ namespace AppointmentsAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
-
-                    b.HasIndex("ProfessionalId");
 
                     b.ToTable("services");
                 });
@@ -126,15 +130,15 @@ namespace AppointmentsAPI.Migrations
                     b.ToTable("users");
                 });
 
-            modelBuilder.Entity("Appointments_API.Models.Service", b =>
+            modelBuilder.Entity("Appointments_API.Models.Professional", b =>
                 {
-                    b.HasOne("Appointments_API.Models.Professional", "Professional")
+                    b.HasOne("Appointments_API.Models.Service", "Service")
                         .WithMany()
-                        .HasForeignKey("ProfessionalId")
+                        .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Professional");
+                    b.Navigation("Service");
                 });
 #pragma warning restore 612, 618
         }
