@@ -3,7 +3,7 @@
 Esta API .NET fornece uma solução para gerenciar o agendamento de serviços entre clientes e profissionais. Desenvolvida para facilitar a marcação de compromissos, a API é simples e eficiente.
 
 
-https://github.com/user-attachments/assets/4c135a12-c0cf-4c37-8ead-fe0ca56c4938
+https://github.com/user-attachments/assets/10d524f3-0775-4c45-8bfa-2cd94da15678
 
 ## 📖 Descrição
 A API de Agendamento de Serviços é uma aplicação .NET que permite:
@@ -11,7 +11,8 @@ A API de Agendamento de Serviços é uma aplicação .NET que permite:
 - **Gerenciar Profissionais**: Adicionar, listar e visualizar profissionais e os serviços que oferecem.
 - **Gerenciar Serviços**: Adicionar, listar e visualizar serviços disponíveis para agendamento.
 - **Gerenciar Compromissos**: Agendar, listar e cancelar compromissos entre clientes e profissionais.
-  
+
+
 ## 🚀 Recursos
 
 - **Adicionar Profissionais**: Cadastre novos profissionais com informações sobre os serviços que oferecem.
