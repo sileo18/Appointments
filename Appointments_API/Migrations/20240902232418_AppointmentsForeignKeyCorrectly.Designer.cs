@@ -4,6 +4,7 @@ using Appointments_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppointmentsAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240902232418_AppointmentsForeignKeyCorrectly")]
+    partial class AppointmentsForeignKeyCorrectly
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,39 +27,31 @@ namespace AppointmentsAPI.Migrations
 
             modelBuilder.Entity("Appointments_API.Models.Appointment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<int>("ProfessionalId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProfessionalServiceProfessionalId")
+                    b.Property<DateTime>("dateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("serviceId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProfessionalServiceServiceId")
+                    b.Property<int>("userId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Userid")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.HasIndex("ProfessionalId");
 
-                    b.HasIndex("ServiceId");
+                    b.HasIndex("serviceId");
 
-                    b.HasIndex("Userid");
-
-                    b.HasIndex("ProfessionalServiceProfessionalId", "ProfessionalServiceServiceId");
+                    b.HasIndex("userId");
 
                     b.ToTable("appointments");
                 });
@@ -82,23 +77,6 @@ namespace AppointmentsAPI.Migrations
                     b.ToTable("professionals");
                 });
 
-            modelBuilder.Entity("Appointments_API.Models.ProfessionalService", b =>
-                {
-                    b.Property<int>("ProfessionalId")
-                        .HasColumnType("int")
-                        .HasColumnOrder(0);
-
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("int")
-                        .HasColumnOrder(1);
-
-                    b.HasKey("ProfessionalId", "ServiceId");
-
-                    b.HasIndex("ServiceId");
-
-                    b.ToTable("professionalServices");
-                });
-
             modelBuilder.Entity("Appointments_API.Models.Service", b =>
                 {
                     b.Property<int>("id")
@@ -106,6 +84,9 @@ namespace AppointmentsAPI.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<int>("ProfessionalId")
+                        .HasColumnType("int");
 
                     b.Property<double>("cost")
                         .HasColumnType("float");
@@ -119,6 +100,8 @@ namespace AppointmentsAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
+
+                    b.HasIndex("ProfessionalId");
 
                     b.ToTable("services");
                 });
@@ -162,19 +145,15 @@ namespace AppointmentsAPI.Migrations
 
                     b.HasOne("Appointments_API.Models.Service", "Service")
                         .WithMany()
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("serviceId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Appointments_API.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("Userid")
+                        .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Appointments_API.Models.ProfessionalService", null)
-                        .WithMany("Appointments")
-                        .HasForeignKey("ProfessionalServiceProfessionalId", "ProfessionalServiceServiceId");
 
                     b.Navigation("Professional");
 
@@ -183,38 +162,15 @@ namespace AppointmentsAPI.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Appointments_API.Models.ProfessionalService", b =>
+            modelBuilder.Entity("Appointments_API.Models.Service", b =>
                 {
                     b.HasOne("Appointments_API.Models.Professional", "Professional")
-                        .WithMany("ProfessionalServices")
+                        .WithMany()
                         .HasForeignKey("ProfessionalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Appointments_API.Models.Service", "Service")
-                        .WithMany("ProfessionalServices")
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Professional");
-
-                    b.Navigation("Service");
-                });
-
-            modelBuilder.Entity("Appointments_API.Models.Professional", b =>
-                {
-                    b.Navigation("ProfessionalServices");
-                });
-
-            modelBuilder.Entity("Appointments_API.Models.ProfessionalService", b =>
-                {
-                    b.Navigation("Appointments");
-                });
-
-            modelBuilder.Entity("Appointments_API.Models.Service", b =>
-                {
-                    b.Navigation("ProfessionalServices");
                 });
 #pragma warning restore 612, 618
         }

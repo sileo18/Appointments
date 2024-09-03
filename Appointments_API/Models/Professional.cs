@@ -10,6 +10,9 @@ namespace Appointments_API.Models
         public int id { get; set; }
         public string name { get; set; }
         public string description { get; set; }
+        public ICollection<ProfessionalService> ProfessionalServices { get; set; }
+
+
         
     }
 }

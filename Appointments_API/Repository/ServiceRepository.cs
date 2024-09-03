@@ -20,16 +20,6 @@ namespace Appointments_API.Repository
             _dbcontext.services.Update(entity);
             await _dbcontext.SaveChangesAsync();
         }
-
-        public async Task<Service> GetAsync(Expression<Func<Service, bool>>? filter = null, bool tracked = true)
-        {
-            IQueryable<Service> query = _dbcontext.services.Include(s => s.Professional);
-
-            if (!tracked) { query = query.AsNoTracking(); }
-
-            if (filter != null) { query = query.Where(filter); }
-
-            return await query.FirstOrDefaultAsync();
-        }
+       
     }
 }
