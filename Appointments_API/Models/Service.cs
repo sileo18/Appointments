@@ -7,10 +7,14 @@ namespace Appointments_API.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int id { get; set; }
+        public int? id { get; set; }
         public string name { get; set; }
         public string description { get; set; }
         public double cost { get; set; }
-        public ICollection<ProfessionalService> ProfessionalServices { get; set; }
+
+        [ForeignKey("Professional")]
+        public int ProfessionalId { get; set; }
+        public Professional Professional { get; set; }
+
     }
 }

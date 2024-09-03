@@ -10,14 +10,18 @@ namespace Appointments_API.Models
         public int Id { get; set; }
         public DateTime DateTime { get; set; }
 
-        // Foreign keys for ProfessionalService
+        [ForeignKey("Professional")]
         public int ProfessionalId { get; set; }
-        public int ServiceId { get; set; }
-
-        // Navigation properties
         public Professional Professional { get; set; }
+
+        [ForeignKey("Service")]
+        public int ServiceId { get; set; }
         public Service Service { get; set; }
+
+        [ForeignKey("User")]
+        public int UserId { get; set; }
         public User User { get; set; }
+        
 
     }
 }
