@@ -62,7 +62,7 @@ namespace Appointments_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost]
-        public async Task<ActionResult<ApiResponse>> CreateProfessional([FromBody] ProfessionalUpdateDTO professionalCreateDTO)
+        public async Task<ActionResult<ApiResponse>> CreateProfessional([FromBody] ProfessionalCreateDTO professionalCreateDTO)
         {
 
             try

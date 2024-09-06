@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Appointments_API.Models.Dto
+namespace Appointments_API.Models.Dto   
 {
     public class JobDTO
     {

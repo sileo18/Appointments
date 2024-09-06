@@ -85,12 +85,13 @@ namespace Appointments_API.Controllers
 
                 Job job = _mapper.Map<Job>(jobCreateDTO);
                 await _dbJob.CreateAsync(job);
+                var jobDto = _mapper.Map<JobDTO>(job);
 
-                _response.Result = job;
+                _response.Result = jobDto;
                 _response.StatusCode = HttpStatusCode.Created;
                 _response.IsSuccess = true;
 
-                return CreatedAtRoute("GetService", new { id = job.Id }, _response);
+                return CreatedAtRoute("GetJob", new { id = jobDto.id }, _response);
             }
             catch (Exception ex)
             {

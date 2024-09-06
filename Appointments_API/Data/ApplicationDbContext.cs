@@ -75,7 +75,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("Job");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Cost).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
@@ -85,7 +85,7 @@ public partial class ApplicationDbContext : DbContext
                 .IsUnicode(false);           
 
             entity.HasOne(d => d.ProfessionalldNavigation).WithMany(p => p.Jobs)
-                .HasForeignKey(d => d.Professionalld)
+                .HasForeignKey(d => d.ProfessionalId)
                 .HasConstraintName("FK__Job__Professiona__4D94879B");
         });
 
@@ -95,7 +95,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("Professional");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
                 .IsUnicode(false);
