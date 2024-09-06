@@ -3,11 +3,11 @@ using System.Linq.Expressions;
 
 namespace Appointments_API.Repository.IRepository
 {
-    public interface IUserRepository : IRepository<User>
+    public interface ICustomerRepository : IRepository<Customer>
     {
         //Task<List<User>> GetAll(Expression<Func<User>> filter = null);
         
-        Task UpdateAsync(User entity);
+        Task UpdateAsync(Customer entity);
        
        
     }

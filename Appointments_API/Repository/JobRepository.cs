@@ -7,17 +7,17 @@ using System.Linq;
 
 namespace Appointments_API.Repository
 {
-    public class ServiceRepository : Repository<Service>, IServiceRepository
+    public class JobRepository : Repository<Job>, IJobRepository
     {
         private readonly ApplicationDbContext _dbcontext;
 
-        public ServiceRepository (ApplicationDbContext dbcontext) : base(dbcontext)
+        public JobRepository (ApplicationDbContext dbcontext) : base(dbcontext)
         {
             _dbcontext = dbcontext;
         }
-        public async Task UpdateAsync(Service entity)
+        public async Task UpdateAsync(Job entity)
         {
-            _dbcontext.services.Update(entity);
+            _dbcontext.Jobs.Update(entity);
             await _dbcontext.SaveChangesAsync();
         }
        

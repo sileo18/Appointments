@@ -7,18 +7,18 @@ using System.Linq.Expressions;
 
 namespace Appointments_API.Repository
 {
-    public class UserRepository : Repository<User>, IUserRepository
+    public class CustomerRepository : Repository<Customer>, ICustomerRepository
     {
         private readonly ApplicationDbContext _dbcontext;
 
-        public UserRepository(ApplicationDbContext dbcontext) : base(dbcontext) 
+        public CustomerRepository(ApplicationDbContext dbcontext) : base(dbcontext) 
         { 
             _dbcontext = dbcontext;
         }        
 
-        public async Task UpdateAsync(User entity)
+        public async Task UpdateAsync(Customer entity)
         {
-            _dbcontext.users.Update(entity);
+            _dbcontext.Customers.Update(entity);
             await _dbcontext.SaveChangesAsync();
         }
 

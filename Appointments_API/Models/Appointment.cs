@@ -1,27 +1,23 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Appointments_API.Models
+namespace Appointments_API.Models;
+
+public partial class Appointment
 {
-    public class Appointment
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]     
-        public int Id { get; set; }
-        public DateTime DateTime { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
 
-        [ForeignKey("Professional")]
-        public int ProfessionalId { get; set; }
-        public Professional Professional { get; set; }
+    public DateTime DateTime { get; set; }    
 
-        [ForeignKey("Service")]
-        public int ServiceId { get; set; }
-        public Service Service { get; set; }
+    public string? Title { get; set; }
 
-        [ForeignKey("User")]
-        public int UserId { get; set; }
-        public User User { get; set; }
-        
+    public int? JobId { get; set; }
 
-    }
+    public int? CustomerId { get; set; }
+
+    public virtual Customer? Customer { get; set; }
+
+    public virtual Job? Job { get; set; }
 }

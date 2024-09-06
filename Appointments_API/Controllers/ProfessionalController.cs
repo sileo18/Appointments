@@ -1,6 +1,5 @@
-using Appointments_API.Data;
-using Appointments_API.Models;
 using Appointments_API.Models.Dto;
+using Appointments_API.Models;
 using Appointments_API.Repository.IRepository;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +39,7 @@ namespace Appointments_API.Controllers
                     return BadRequest();
 
                 }
-                var professional = await _dbProfessional.GetAsync(u => u.id == id);
+                var professional = await _dbProfessional.GetAsync(u => u.Id == id);
 
                 if (professional == null)
                 {
@@ -63,7 +62,7 @@ namespace Appointments_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost]
-        public async Task<ActionResult<ApiResponse>> CreateProfessional([FromBody] ProfessionalCreateDTO professionalCreateDTO)
+        public async Task<ActionResult<ApiResponse>> CreateProfessional([FromBody] ProfessionalUpdateDTO professionalCreateDTO)
         {
 
             try
@@ -85,7 +84,7 @@ namespace Appointments_API.Controllers
                 _response.StatusCode = HttpStatusCode.Created;
                 _response.IsSuccess = true;
 
-                return CreatedAtRoute("GetProfessional", new { id = professional.id }, _response);
+                return CreatedAtRoute("GetProfessional", new { id = professional.Id }, _response);
             }
             catch (Exception ex)
             {
@@ -109,7 +108,7 @@ namespace Appointments_API.Controllers
                     return BadRequest();
 
                 }
-                var professional = await _dbProfessional.GetAsync(u => u.id == id);
+                var professional = await _dbProfessional.GetAsync(u => u.Id == id);
 
                 if (professional == null)
                 {

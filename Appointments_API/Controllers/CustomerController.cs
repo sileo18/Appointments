@@ -12,16 +12,16 @@ namespace Appointments_API.Controllers
 {
     [ApiController]
     //[Route("api/AppointmentsAPI")]
-    [Route("api/UserAPI")]
-    public class UserController : ControllerBase
+    [Route("api/CustomersAPI")]
+    public class CustomerController : ControllerBase
     {
         protected ApiResponse _response;
 
         private readonly IMapper _mapper;
 
-        private readonly IUserRepository _dbUser;
+        private readonly ICustomerRepository _dbUser;
 
-        public UserController(IUserRepository dbUser, IMapper mapper)
+        public CustomerController(ICustomerRepository dbUser, IMapper mapper)
         {
             this._response = new();
             _dbUser = dbUser;
@@ -30,8 +30,8 @@ namespace Appointments_API.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("{id}", Name = "GetUser")]
-        public async Task<ActionResult<ApiResponse>> GetUser(int id)
+        [HttpGet("{id}", Name = "GetCustomer")]
+        public async Task<ActionResult<ApiResponse>> GetCustomer(int id)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace Appointments_API.Controllers
                     return BadRequest();
 
                 }
-                var user = await _dbUser.GetAsync(u => u.id == id);
+                var user = await _dbUser.GetAsync(u => u.Id == id);
 
                 if (user == null)
                 {
@@ -63,7 +63,7 @@ namespace Appointments_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost]
-        public async Task<ActionResult<ApiResponse>> CreateUser([FromBody] UserCreateDTO userCreateDto)
+        public async Task<ActionResult<ApiResponse>> CreateCustomer([FromBody] CustomerCreateDTO customerCreateDTO)
         {
 
             try
@@ -73,18 +73,18 @@ namespace Appointments_API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                if (userCreateDto == null)
+                if (customerCreateDTO == null)
                 {
-                    return BadRequest(userCreateDto);
+                    return BadRequest(customerCreateDTO);
                 }
 
-                User user = _mapper.Map<User>(userCreateDto);
-                await _dbUser.CreateAsync(user);
+                Customer customer = _mapper.Map<Customer>(customerCreateDTO);
+                await _dbUser.CreateAsync(customer);
 
-                _response.Result = user;
+                _response.Result = customer;
                 _response.StatusCode = HttpStatusCode.Created;
 
-                return CreatedAtRoute("GetUser", new { id = user.id }, _response);
+                return CreatedAtRoute("GetCustomer", new { id = customer.Id }, _response);
             }
             catch (Exception ex)
             {
@@ -98,7 +98,7 @@ namespace Appointments_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete]
-        public async Task<ActionResult<ApiResponse>> DeleteUser(int id)
+        public async Task<ActionResult<ApiResponse>> DeleteCustomer(int id)
         {
             try
             {
@@ -108,14 +108,14 @@ namespace Appointments_API.Controllers
                     return BadRequest();
 
                 }
-                var user = await _dbUser.GetAsync(u => u.id == id);
+                var customer = await _dbUser.GetAsync(u => u.Id == id);
 
-                if (user == null)
+                if (customer == null)
                 {
                     return NotFound();
                 }
 
-                await _dbUser.RemoveAsync(user);
+                await _dbUser.RemoveAsync(customer);
 
                 _response.IsSuccess = true;
                 _response.StatusCode = HttpStatusCode.NoContent;
@@ -133,18 +133,18 @@ namespace Appointments_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPut]
-        public async Task<ActionResult<ApiResponse>> UpdateUser(int id, [FromBody] UserUpdateDTO userUpdateDto)
+        public async Task<ActionResult<ApiResponse>> UpdateUser(int id, [FromBody] CustomerUpdateDTO customerUpdateDTO)
         {
             try
             {
-                if (userUpdateDto == null || id != userUpdateDto.id)
+                if (customerUpdateDTO == null || id != customerUpdateDTO.id)
                 {
                     return BadRequest();
                 }
 
-                User model = _mapper.Map<User>(userUpdateDto);
+                Customer customer = _mapper.Map<Customer>(customerUpdateDTO);
 
-                await _dbUser.UpdateAsync(model);
+                await _dbUser.UpdateAsync(customer);
 
                 _response.IsSuccess = true;
                 _response.StatusCode = HttpStatusCode.NoContent;

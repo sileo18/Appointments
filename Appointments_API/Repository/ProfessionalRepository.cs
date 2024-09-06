@@ -18,7 +18,7 @@ namespace Appointments_API.Repository
 
         public async Task UpdateAsync(Professional entity)
         {
-            _dbcontext.professionals.Update(entity);
+            _dbcontext.Professionals.Update(entity);
             await _dbcontext.SaveChangesAsync();
         }
 

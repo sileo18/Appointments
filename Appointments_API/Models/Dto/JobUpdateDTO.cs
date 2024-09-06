@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Appointments_API.Models.Dto
 {
-    public class ServiceUpdateDTO
+    public class JobUpdateDTO
     {        
         
         public int id { get; set; }
