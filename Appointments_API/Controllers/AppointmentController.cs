@@ -1,57 +1,54 @@
-﻿using Appointments_API.Models.Dto;
+using Appointments_API.Data;
 using Appointments_API.Models;
+using Appointments_API.Models.Dto;
 using Appointments_API.Repository.IRepository;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Net;
-
-
 
 namespace Appointments_API.Controllers
 {
-    [Route("api/JobAPI")]
     [ApiController]
-    public class JobController : ControllerBase
+    //[Route("api/AppointmentsAPI")]
+    [Route("api/AppointmentAPI")]
+    public class AppointmentController : ControllerBase
     {
         protected ApiResponse _response;
-        private readonly IMapper _mapper;
-        private readonly IProfessionalRepository _dbProfessional;
-        private readonly IJobRepository _dbJob;
 
-        public JobController(IMapper mapper, IJobRepository dbJob, IProfessionalRepository dbProfessional)
+        private readonly IMapper _mapper;
+
+        private readonly IAppointmentRepository _dbAppointment;
+
+        public AppointmentController(IAppointmentRepository dbAppointment, IMapper mapper)
         {
             this._response = new();
+            _dbAppointment = dbAppointment;
             _mapper = mapper;
-            _dbJob = dbJob;
-            _dbProfessional = dbProfessional;
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("{id}", Name = "GetJob")]
-
-        public async Task<ActionResult<ApiResponse>> GetJob(int id)
+        [HttpGet("{id}", Name = "GetAppointment")]
+        public async Task<ActionResult<ApiResponse>> GetAppointment(int id)
         {
             try
             {
                 if (id == 0)
                 {
-
                     return BadRequest();
-
                 }
+                var appointment = await _dbAppointment.GetAsync(u => u.Id == id, true,
+                                                                 a => a.Customer,
+                                                                 a => a.Job);
 
-                var job = await _dbJob.GetAsync(u => u.Id == id);
-
-                if (job == null)
+                if (appointment == null)
                 {
                     return NotFound();
                 }
-
-                _response.Result = job;
+                _response.Result = appointment;
                 _response.StatusCode = HttpStatusCode.OK;
-                _response.IsSuccess = true;
                 return Ok(_response);
             }
             catch (Exception ex)
@@ -64,34 +61,30 @@ namespace Appointments_API.Controllers
 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost]
-        public async Task<ActionResult<ApiResponse>> CreateJob([FromBody] JobCreateDTO jobCreateDTO)
+        public async Task<ActionResult<ApiResponse>> CreateAppointment([FromBody] AppointmentCreateDTO appointmentCreateDTO)
         {
+
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest();
-                }
-                if (await _dbProfessional.GetAsync(u => u.Id == jobCreateDTO.ProfessionalId) == null)
-                {
-                    ModelState.AddModelError("Custom Error", "Professional Id is invalid!");
                     return BadRequest(ModelState);
                 }
-                if (jobCreateDTO == null)
+
+                if (appointmentCreateDTO == null)
                 {
-                    return BadRequest(jobCreateDTO);
+                    return BadRequest(appointmentCreateDTO);
                 }
 
-                Job job = _mapper.Map<Job>(jobCreateDTO);
-                await _dbJob.CreateAsync(job);
-                var jobDto = _mapper.Map<JobDTO>(job);
+                Appointment appointment = _mapper.Map<Appointment>(appointmentCreateDTO);
+                await _dbAppointment.CreateAsync(appointment);
 
-                _response.Result = jobDto;
+                _response.Result = appointment;
                 _response.StatusCode = HttpStatusCode.Created;
-                _response.IsSuccess = true;
 
-                return CreatedAtRoute("GetJob", new { id = jobDto.id }, _response);
+                return CreatedAtRoute("GetAppointment", new { id = appointment.Id }, _response);
             }
             catch (Exception ex)
             {
@@ -105,7 +98,7 @@ namespace Appointments_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete]
-        public async Task<ActionResult<ApiResponse>> DeleteJob(int id)
+        public async Task<ActionResult<ApiResponse>> DeleteAppointment(int id)
         {
             try
             {
@@ -115,14 +108,14 @@ namespace Appointments_API.Controllers
                     return BadRequest();
 
                 }
-                var job = await _dbJob.GetAsync(u => u.Id == id);
+                var appointment = await _dbAppointment.GetAsync(u => u.Id == id);
 
-                if (job == null)
+                if (appointment == null)
                 {
                     return NotFound();
                 }
 
-                await _dbJob.RemoveAsync(job);
+                await _dbAppointment.RemoveAsync(appointment);
 
                 _response.IsSuccess = true;
                 _response.StatusCode = HttpStatusCode.NoContent;
@@ -140,24 +133,18 @@ namespace Appointments_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPut]
-        public async Task<ActionResult<ApiResponse>> UpdateService(int id,[FromBody] JobUpdateDTO jobUpdateDTO)
+        public async Task<ActionResult<ApiResponse>> UpdateAppointment(int id, [FromBody] AppointmentUpdateDTO appointmentUpdateDTO)
         {
             try
             {
-                if (jobUpdateDTO == null || id != jobUpdateDTO.id)
+                if (appointmentUpdateDTO == null || id != appointmentUpdateDTO.Id)
                 {
                     return BadRequest();
                 }
 
-                if (await _dbProfessional.GetAsync(u => u.Id == jobUpdateDTO.ProfessionalId) == null)
-                {
-                    ModelState.AddModelError("Custom Error", "Professional Id is invalid!");
-                    return BadRequest(ModelState);
-                }               
+                Appointment appointment = _mapper.Map<Appointment>(appointmentUpdateDTO);
 
-                Job job = _mapper.Map<Job>(jobUpdateDTO);
-
-                await _dbJob.UpdateAsync(job);
+                await _dbAppointment.UpdateAsync(appointment);
 
                 _response.IsSuccess = true;
                 _response.StatusCode = HttpStatusCode.NoContent;

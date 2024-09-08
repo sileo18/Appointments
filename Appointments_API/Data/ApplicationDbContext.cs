@@ -34,7 +34,7 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Appointm__3214EC0740C0045D");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();           
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();           
             entity.Property(e => e.Title)
                 .HasMaxLength(255)
                 .IsUnicode(false);

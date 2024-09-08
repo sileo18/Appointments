@@ -24,16 +24,24 @@ namespace Appointments_API.Repository
 
         }
 
-        public async Task<T> GetAsync(Expression<Func<T, bool>>? filter = null, bool tracked = true)
+        public async Task<T> GetAsync(Expression<Func<T, bool>>? filter = null, bool tracked = true, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = dbSet;
 
-            if (!tracked) { query.AsNoTracking(); }
+            if (!tracked) { query = query.AsNoTracking(); }
 
             if (filter != null) { query = query.Where(filter); }
 
-            return await query.FirstOrDefaultAsync();
+            // Inclui as entidades relacionadas, se houver
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
 
+            return await query.FirstOrDefaultAsync();
         }
 
         public async Task RemoveAsync(T entity)

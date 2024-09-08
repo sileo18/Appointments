@@ -25,6 +25,13 @@ namespace Appointments_API
 
             CreateMap<JobUpdateDTO, Job>();
             CreateMap<Job, JobUpdateDTO>();
+
+            CreateMap<AppointmentCreateDTO, Appointment>();
+            CreateMap<Appointment, AppointmentCreateDTO>();
+
+            CreateMap<AppointmentUpdateDTO, Appointment>();
+            CreateMap<Appointment, AppointmentUpdateDTO>();
+            
         }
     }
 }
