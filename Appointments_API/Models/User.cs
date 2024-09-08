@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Appointments_API.Models;
 
-public partial class Customer
+public partial class User
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
@@ -16,6 +16,8 @@ public partial class Customer
     public string Password { get; set; } = null!;
 
     public string? Phone { get; set; }
+
+    public string Role { get; set;}
 
     public virtual ICollection<Appointment> Appointments { get; } = new List<Appointment>();
 }

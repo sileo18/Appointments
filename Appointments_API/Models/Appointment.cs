@@ -17,7 +17,7 @@ public partial class Appointment
 
     public int? CustomerId { get; set; }
 
-    public virtual Customer? Customer { get; set; }   
+    public virtual User? Customer { get; set; }   
 
     public virtual Job? Job { get; set; }
     

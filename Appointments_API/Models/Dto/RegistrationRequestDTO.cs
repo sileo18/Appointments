@@ -2,7 +2,7 @@
 
 namespace Appointments_API.Models.Dto
 {
-    public class RegistrationDTO
+    public class RegistrationRequestDTO
     {        
         public string Username { get; set; }        
         public string Email { get; set; }

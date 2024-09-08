@@ -8,11 +8,8 @@ namespace Appointments_API
     {
         public MappingConfig()
         {
-            CreateMap<CustomerCreateDTO, Customer>();
-            CreateMap<Customer, CustomerCreateDTO>();
-
-            CreateMap<CustomerUpdateDTO, Customer>();
-            CreateMap<Customer, CustomerUpdateDTO>();
+            CreateMap<RegistrationDTO, User>();
+            CreateMap<User, RegistrationDTO>();           
 
             CreateMap<ProfessionalCreateDTO, Professional>();
             CreateMap<Professional, ProfessionalCreateDTO>();

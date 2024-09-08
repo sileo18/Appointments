@@ -18,7 +18,7 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Appointment> Appointments { get; set; }
 
-    public virtual DbSet<Customer> Customers { get; set; }
+    public virtual DbSet<User> Customers { get; set; }
 
     public virtual DbSet<Job> Jobs { get; set; }
 
@@ -48,7 +48,7 @@ public partial class ApplicationDbContext : DbContext
                 .HasConstraintName("FK__Appointme__JobId__5070F446");
         });
 
-        modelBuilder.Entity<Customer>(entity =>
+        modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Customer__3214EC077E67552C");
 
