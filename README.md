@@ -1,9 +1,10 @@
-# API de Agendamento de Serviços (**EM ANDAMENTO** **CRUD USER DONE**)
+# API de Agendamento de Serviços (**EM ANDAMENTO** **CRUD DONE**)
 
 Esta API .NET fornece uma solução para gerenciar o agendamento de serviços entre clientes e profissionais. Desenvolvida para facilitar a marcação de compromissos, a API é simples e eficiente.
 
+https://github.com/user-attachments/assets/14a57dbf-d065-45a2-ae88-09a727e93caf
 
-https://github.com/user-attachments/assets/10d524f3-0775-4c45-8bfa-2cd94da15678
+c45-8bfa-2cd94da15678
 
 ## 📖 Descrição
 A API de Agendamento de Serviços é uma aplicação .NET que permite:
