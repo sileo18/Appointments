@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Appointments_API.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Appointments_API.Data;
 
-public partial class ApplicationDbContext : DbContext
+public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public ApplicationDbContext()
     {
@@ -15,6 +17,7 @@ public partial class ApplicationDbContext : DbContext
         : base(options)
     {
     }
+    public DbSet<ApplicationUser> ApplicationUsers { get; set; }  
 
     public virtual DbSet<Appointment> Appointments { get; set; }
 
@@ -22,7 +25,7 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Job> Jobs { get; set; }
 
-    public virtual DbSet<Professional> Professionals { get; set; }
+    public virtual DbSet<Professional> Professionals { get; set; }    
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
@@ -30,6 +33,8 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Appointment>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Appointm__3214EC0740C0045D");

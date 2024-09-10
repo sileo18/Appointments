@@ -7,6 +7,6 @@ namespace Appointments_API.Repository.IRepository
     {
         bool IsUniqueUser(string email); 
         Task<LoginResponseDTO> Login(LoginRequestDTO customerLoginRequestDTO);
-        Task<User> Register(RegistrationDTO customerRegistrationDTO);
+        Task<UserDTO> Register(RegistrationDTO customerRegistrationDTO);
     }
 }

@@ -28,6 +28,8 @@ namespace Appointments_API
 
             CreateMap<AppointmentUpdateDTO, Appointment>();
             CreateMap<Appointment, AppointmentUpdateDTO>();
+
+            CreateMap<ApplicationUser, UserDTO>().ReverseMap();
             
         }
     }

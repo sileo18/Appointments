@@ -2,6 +2,8 @@
 using Appointments_API.Models;
 using Appointments_API.Models.Dto;
 using Appointments_API.Repository.IRepository;
+using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,17 +14,22 @@ namespace Appointments_API.Repository
     public class AuthRepository : IAuthRepository
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly UserManager<ApplicationUser> _userManager;
         private string _secretKey;
+        private readonly IMapper _mapper;
 
-        public AuthRepository (ApplicationDbContext dbContext, IConfiguration configuration)
+        public AuthRepository (ApplicationDbContext dbContext, IConfiguration configuration, UserManager<ApplicationUser> userMangaer,
+            IMapper mapper)
         {
             _dbContext = dbContext;
             _secretKey = configuration.GetValue<string>("ApiSettings:Secret");
+            _userManager = userMangaer;
+            _mapper = mapper;   
         }
 
         public bool IsUniqueUser(string email)
         {
-            var user = _dbContext.Customers.FirstOrDefault(x => x.Email == email);
+            var user = _dbContext.ApplicationUsers.FirstOrDefault(x => x.Email == email);
 
             if (user==null)
             {
@@ -34,10 +41,13 @@ namespace Appointments_API.Repository
 
         public async Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
         {
-           var user = _dbContext.Customers.FirstOrDefault(user =>  user.Email.ToLower() == loginRequestDTO.Email.ToLower() 
-           && user.Password == loginRequestDTO.Password.ToLower());
+           var user = _dbContext.ApplicationUsers
+                .FirstOrDefault(user =>  user.Email.ToLower() == loginRequestDTO.Email.ToLower());
 
-        if (user==null)
+
+            bool isValid = await _userManager.CheckPasswordAsync(user, loginRequestDTO.Password);
+
+        if (user==null || isValid == false)
             {
                return new LoginResponseDTO()
                 {
@@ -45,6 +55,8 @@ namespace Appointments_API.Repository
                     Customer = null
                 };
             }
+
+            var roles = await _userManager.GetRolesAsync(user);
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -55,7 +67,8 @@ namespace Appointments_API.Repository
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.Email.ToString()),
-                    new Claim(ClaimTypes.Role, user.Role)
+                    new Claim(ClaimTypes.Role, roles.FirstOrDefault())
+
 
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
@@ -67,29 +80,46 @@ namespace Appointments_API.Repository
             LoginResponseDTO login = new LoginResponseDTO()
             {
                 Token = tokenHandler.WriteToken(token),
-                Customer = user
+                Customer = _mapper.Map<UserDTO>(user),
+                Role = roles.FirstOrDefault()
             };
 
             return login;
         }
 
-        public async Task<User> Register(RegistrationDTO customerRegistrationDTO)
+        public async Task<UserDTO> Register(RegistrationDTO customerRegistrationDTO)
         {
-            User customer = new()
+            ApplicationUser customer = new()
             {
                 Email = customerRegistrationDTO.Email,
-                Name = customerRegistrationDTO.Name,
-                Password = customerRegistrationDTO.Password,
-                Phone = customerRegistrationDTO.Phone
+                UserName = customerRegistrationDTO.Email,
+                NormalizedEmail = customerRegistrationDTO.Email.ToUpper(),
+                Name = customerRegistrationDTO.Name  
+               
             };
 
-            _dbContext.Add(customer);
+            try
+            {
+                var result = await _userManager.CreateAsync(customer, customerRegistrationDTO.Password);
+                await _dbContext.SaveChangesAsync();
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(customer, "Customer");
+                    var userToReturn = _dbContext.ApplicationUsers.
+                        FirstOrDefault(u => u.Email == customerRegistrationDTO.Email);
 
-            await _dbContext.SaveChangesAsync();
+                   return _mapper.Map<UserDTO>(userToReturn);
+                }
+            }
 
-            customer.Password = "";
+            catch (Exception e)
+            {
 
-            return customer;
+            }
+
+            
+
+            return new UserDTO();
         }
     }
 }
