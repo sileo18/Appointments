@@ -4,8 +4,7 @@ using Appointments_API.Repository.IRepository;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace Appointments_API.Controllers
 {
@@ -30,7 +29,7 @@ namespace Appointments_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}", Name = "GetJob")]
-
+        [Authorize]
         public async Task<ActionResult<ApiResponse>> GetJob(int id)
         {
             try
@@ -65,6 +64,7 @@ namespace Appointments_API.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
+        [Authorize(Roles = "Professional")]
         public async Task<ActionResult<ApiResponse>> CreateJob([FromBody] JobCreateDTO jobCreateDTO)
         {
             try
@@ -105,6 +105,7 @@ namespace Appointments_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete]
+        [Authorize(Roles = "Professional")]
         public async Task<ActionResult<ApiResponse>> DeleteJob(int id)
         {
             try
@@ -140,6 +141,7 @@ namespace Appointments_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPut]
+        [Authorize(Roles = "Professional")]
         public async Task<ActionResult<ApiResponse>> UpdateService(int id,[FromBody] JobUpdateDTO jobUpdateDTO)
         {
             try

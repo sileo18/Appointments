@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Appointments_API.Controllers
 {
@@ -29,6 +30,7 @@ namespace Appointments_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id:int}", Name = "GetProfessional")]
+        [Authorize]
         public async Task<ActionResult<ApiResponse>> GetProfessional(int id)
         {
             try
@@ -98,6 +100,7 @@ namespace Appointments_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete]
+        [Authorize(Roles = "Professional")]
         public async Task<ActionResult<ApiResponse>> DeleteProfessional(int id)
         {
             try
@@ -133,6 +136,7 @@ namespace Appointments_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPut("{id:int}", Name = "UpdateProfessional")]
+        [Authorize(Roles = "Professional")]
         public async Task<ActionResult<ApiResponse>> UpdateProfessional(int id, [FromBody] ProfessionalUpdateDTO  professionalUpdateDTO)
         {
             try
