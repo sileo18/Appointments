@@ -30,7 +30,7 @@ namespace Appointments_API.Controllers
             {
                 response.IsSuccess = false;
                 response.StatusCode = HttpStatusCode.BadRequest;
-                response.ErrorMessages.Add("Email or password is incorrect");
+                response.ErrorMessages = new List<string>() { "Email or password is incorrect" };
                 return BadRequest(response);
             }
 

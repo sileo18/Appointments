@@ -15,16 +15,18 @@ namespace Appointments_API.Repository
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private string _secretKey;
         private readonly IMapper _mapper;
 
         public AuthRepository (ApplicationDbContext dbContext, IConfiguration configuration, UserManager<ApplicationUser> userMangaer,
-            IMapper mapper)
+            IMapper mapper, RoleManager<IdentityRole> roleManager)
         {
             _dbContext = dbContext;
             _secretKey = configuration.GetValue<string>("ApiSettings:Secret");
             _userManager = userMangaer;
-            _mapper = mapper;   
+            _mapper = mapper;
+            _roleManager = roleManager;
         }
 
         public bool IsUniqueUser(string email)
@@ -104,6 +106,10 @@ namespace Appointments_API.Repository
                 await _dbContext.SaveChangesAsync();
                 if (result.Succeeded)
                 {
+                    if (!_roleManager.RoleExistsAsync("Customer").GetAwaiter().GetResult()) {
+                        await _roleManager.CreateAsync(new IdentityRole("Customer"));
+                        await _roleManager.CreateAsync(new IdentityRole("Professional"));
+                    }
                     await _userManager.AddToRoleAsync(customer, "Customer");
                     var userToReturn = _dbContext.ApplicationUsers.
                         FirstOrDefault(u => u.Email == customerRegistrationDTO.Email);
