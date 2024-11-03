@@ -4,8 +4,6 @@ Esta API .NET fornece uma solução para gerenciar o agendamento de serviços en
 
 https://github.com/user-attachments/assets/14a57dbf-d065-45a2-ae88-09a727e93caf
 
-c45-8bfa-2cd94da15678
-
 ## 📖 Descrição
 A API de Agendamento de Serviços é uma aplicação .NET que permite:
 
